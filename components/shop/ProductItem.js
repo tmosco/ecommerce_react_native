@@ -1,28 +1,45 @@
 import React from 'react';
-import { Text, View, Image, Button, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
+} from 'react-native';
 import Colors from '../../constants/Colors';
 
 const ProductItem = (props) => {
+  const TouchableCmp =
+    Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
   return (
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: props.image }} />
-      </View>
-      <View style={styles.text}>
-        <Text style={styles.title}>{props.title}</Text>
-        <Text style={styles.price}>${props.price}</Text>
-      </View>
-      <View style={styles.button}>
-        <Button
-          color={Colors.primary}
-          title="View Details"
-          onPress={props.onViewDetail}
-        />
-        <Button
-          color={Colors.primary}
-          title="To Cart"
-          onPress={props.onAddToCart}
-        />
+      <View style={styles.touchable}>
+        <TouchableCmp onPress={props.onViewDetail} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: props.image }} />
+            </View>
+            <View style={styles.text}>
+              <Text style={styles.title}>{props.title}</Text>
+              <Text style={styles.price}>${props.price}</Text>
+            </View>
+            <View style={styles.button}>
+              <Button
+                color={Colors.primary}
+                title="View Details"
+                onPress={props.onViewDetail}
+              />
+              <Button
+                color={Colors.primary}
+                title="To Cart"
+                onPress={props.onAddToCart}
+              />
+            </View>
+          </View>
+        </TouchableCmp>
       </View>
     </View>
   );
@@ -42,6 +59,10 @@ const styles = StyleSheet.create({
     height: 300,
     margin: 20,
   },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
   text: {
     alignItems: 'center',
     height: '15%',
@@ -52,7 +73,7 @@ const styles = StyleSheet.create({
     height: '60%',
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
-    overflow:'hidden',
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
