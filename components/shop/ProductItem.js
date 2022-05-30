@@ -90,10 +90,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginVertical: 4,
+    fontFamily:'open-sans-bold'
   },
   price: {
     textAlign: 'center',
     fontSize: 16,
     color: '#888',
+    fontFamily:'open-sans'
   },
 });

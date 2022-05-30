@@ -8,21 +8,27 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import Colors from '../constants/Colors';
 
 const Stack = createStackNavigator();
-const ShopNavigator = () =>  {
+const ShopNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{
-        headerStyle:{
-            backgroundColor: Platform.OS ==='android' ? Colors.primary : ''
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Platform.OS === 'android' ? Colors.primary : '',
         },
-        headerTintColor:Platform.OS === 'android' ? 'white' : Colors.primary
-
-    }}>
+        headerTitleStyle: {
+          fontFamily: 'open-sans-bold',
+        },
+        headerBackTitleStyle: {
+          fontFamily: 'open-sans-bold',
+        },
+        headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
+      }}
+    >
       <Stack.Screen name="ProductsOverview" component={ProductOverviewScreen} />
       <Stack.Screen name="UserProduct" component={UserProduct} />
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
-
     </Stack.Navigator>
   );
-}
+};
 
 export default ShopNavigator;
