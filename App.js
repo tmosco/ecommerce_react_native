@@ -8,7 +8,10 @@ import AppLoading  from 'expo-app-loading';
 import * as Font from 'expo-font';
 import 'react-native-gesture-handler';
 
-import ShopNavigator from './navigation/ShopNavigator';
+
+import DrawerNavigator from './navigation/DrawerNavigator';
+
+import 'react-native-gesture-handler';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -34,7 +37,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <ShopNavigator />
+        <DrawerNavigator />
       </NavigationContainer>
     </Provider>
   );

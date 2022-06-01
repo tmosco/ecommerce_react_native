@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import PRODUCTS from '../data/dummy-data';
+import PRODUCTS from '../../data/dummy-data';
 
 
 
@@ -18,6 +18,9 @@ const productSlice = createSlice({
 
       }
 
-})
+}
+)
+
+
 
 export default productSlice.reducer;
