@@ -54,6 +54,7 @@ const CartScreen = (props) => {
             amount={itemData.item.productSum.toFixed(2)}
             onRemove={() => dispatch(removeFromCart(itemData.item))}
             title={itemData.item.productTitle.substring(0, 16)}
+            deleteIcon
           />
         )}
       />

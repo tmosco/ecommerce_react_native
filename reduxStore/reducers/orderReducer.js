@@ -10,8 +10,6 @@ const orderSlice = createSlice({
   },
   reducers: {
     addOrder: (state, action) => {
-      console.log(action.payload.items)
-      // console.log(state)
       const newOrder = new Order(
         new Date().toString(),
         action.payload.items,
