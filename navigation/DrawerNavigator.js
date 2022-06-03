@@ -2,6 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import ShopNavigator from './ShopNavigator';
 import CustomDrawer from '../components/UI/CustomDrawer';
 import OrderNavigator from './OrderNavigator';
+import UserNavigator from './UserNavigator';
 import { Ionicons } from '@expo/vector-icons';
 
 import CartScreen from '../screens/shop/CartScreen';
@@ -46,6 +47,20 @@ function DrawerNavigator() {
           drawerIcon: (drawerConfig) => (
             <Ionicons
             name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
+              size={23}
+              color={drawerConfig.drawerActiveTintColor}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="User"
+        component={UserNavigator}
+        options={{
+          title: 'Admin',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+            name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
               size={23}
               color={drawerConfig.drawerActiveTintColor}
             />

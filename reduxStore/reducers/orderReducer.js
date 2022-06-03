@@ -3,7 +3,7 @@ import Order from '../../models/order';
 
 
 const orderSlice = createSlice({
-  name: 'cart',
+  name: 'order',
   initialState: {
     orders: [],
     item:9

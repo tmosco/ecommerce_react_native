@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import CartItem from '../../models/cart-item';
 import { addOrder } from './orderReducer';
+import { deleteProduct } from './productReducers';
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -72,13 +73,30 @@ const cartSlice = createSlice({
         numOfItem: state.numOfItem - 1,
       };
     },
-    addOrder: () => {
+  },
+  extraReducers: (builders) => {
+    builders.addCase(addOrder, (state, action) => {
       return {
         items: {},
         totalAmount: 0,
         numOfItem: 0,
       };
-    },
+    }),
+      builders.addCase(deleteProduct, (state, action) => {
+        if (!state.items[action.payload]) {
+          return state;
+        }
+        const updatedItems = { ...state.items };
+        const itemTotal = state.items[action.payload].sum;
+        const itemQuantity = state.items[action.payload].quantity;
+        delete updatedItems[action.payload];
+        return {
+          ...state,
+          items: updatedItems,
+          totalAmount: state.totalAmount - itemTotal,
+          numOfItem: state.numOfItem - itemQuantity,
+        };
+      });
   },
 });
 

@@ -9,7 +9,6 @@ import {
   TouchableNativeFeedback,
   Platform,
 } from 'react-native';
-import Colors from '../../constants/Colors';
 
 const ProductItem = (props) => {
   const TouchableCmp =
@@ -26,18 +25,7 @@ const ProductItem = (props) => {
               <Text style={styles.title}>{props.title}</Text>
               <Text style={styles.price}>${props.price}</Text>
             </View>
-            <View style={styles.button}>
-              <Button
-                color={Colors.primary}
-                title="View Details"
-                onPress={props.onViewDetail}
-              />
-              <Button
-                color={Colors.primary}
-                title="To Cart"
-                onPress={props.onAddToCart}
-              />
-            </View>
+            <View style={styles.button}>{props.children}</View>
           </View>
         </TouchableCmp>
       </View>
@@ -90,12 +78,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginVertical: 4,
-    fontFamily:'open-sans-bold'
+    fontFamily: 'open-sans-bold',
   },
   price: {
     textAlign: 'center',
     fontSize: 16,
     color: '#888',
-    fontFamily:'open-sans'
+    fontFamily: 'open-sans',
   },
 });

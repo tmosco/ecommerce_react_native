@@ -25,8 +25,6 @@ const CartScreen = (props) => {
       a.productId > b.productId ? 1 : -1
     );
   });
-  console.log(cartItems + ' order')
-
   return (
     <View style={styles.screen}>
       <View style={styles.summary}>
