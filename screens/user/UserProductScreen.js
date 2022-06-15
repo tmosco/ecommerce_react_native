@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { FlatList, Text, View, StyleSheet, Button } from 'react-native';
+import { FlatList, Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { deleteProduct } from '../../reduxStore/reducers/productReducers';
-
 
 import CustomButton from '../../components/UI/HeaderButton';
 
@@ -12,9 +11,7 @@ import ProductItem from '../../components/shop/ProductItem';
 import Colors from '../../constants/Colors';
 
 const UserProductScreen = (props) => {
-
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -30,15 +27,38 @@ const UserProductScreen = (props) => {
           />
         </HeaderButtons>
       ),
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={CustomButton}>
+          <Item
+            title="Add"
+            iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+            onPress={() => {
+              props.navigation.navigate('EditProduct', {});
+            }}
+          />
+        </HeaderButtons>
+      ),
     });
   }, []);
 
   const userProducts = useSelector((state) => state.products.userProducts);
+ 
 
-  const SelectHandler = (id, title) => {
-    props.navigation.navigate('ProductDetail', {
+  const deleteHandler = (id ) => {
+    Alert.alert('Are you sure?', 'Do you really want to delete product', [
+      { text: 'NO', style: 'default' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: () => dispatch(deleteProduct(id)),
+      },
+    ]);
+  };
+
+  const editProductHandler = (id) => {
+    props.navigation.navigate('EditProduct', {
       productId: id,
-      productTitle: title,
+      // productTitle: title,
     });
   };
 
@@ -49,21 +69,17 @@ const UserProductScreen = (props) => {
       renderItem={(itemData) => (
         <ProductItem
           title={itemData.item.title}
-          price={itemData.item.price.toFixed(2)}
+          price={itemData.item.price}
           image={itemData.item.imageUrl}
         >
           <Button
             color={Colors.secondary}
             title="Edit Product"
             onPress={() => {
-              SelectHandler();
+              editProductHandler(itemData.item.id);
             }}
           />
-          <Button
-            color="red"
-            title="Delete"
-            onPress={() => dispatch(deleteProduct(itemData.item.id))}
-          />
+          <Button color="red" title="Delete" onPress={deleteHandler.bind(this,itemData.item.id)} />
         </ProductItem>
       )}
     />

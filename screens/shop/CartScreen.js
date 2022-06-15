@@ -6,6 +6,8 @@ import CartItem from '../../components/shop/CartItem';
 import { removeFromCart } from '../../reduxStore/reducers/cartReducer';
 import { addOrder } from '../../reduxStore/reducers/orderReducer';
 
+import Card from '../../components/UI/Card';
+
 const CartScreen = (props) => {
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
 
@@ -27,10 +29,12 @@ const CartScreen = (props) => {
   });
   return (
     <View style={styles.screen}>
-      <View style={styles.summary}>
+      <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{' '}
-          <Text style={styles.summaryPrice}>${cartTotalAmount.toFixed(2)}</Text>
+          <Text style={styles.summaryPrice}>
+            ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
+          </Text>
         </Text>
 
         <Button
@@ -38,10 +42,10 @@ const CartScreen = (props) => {
           title="Order Now"
           disabled={cartItems.length === 0}
           onPress={() => {
-            dispatch(addOrder({items:cartItems,amount:cartTotalAmount}));
+            dispatch(addOrder({ items: cartItems, amount: cartTotalAmount }));
           }}
         />
-      </View>
+      </Card>
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.productId}
@@ -56,15 +60,6 @@ const CartScreen = (props) => {
           />
         )}
       />
-      {/* <View>
-        {cartItems.map((item) => (
-            <View>
-          <Text>{item.productTitle}</Text>
-          <Text>{item.productPrice}</Text>
-          <Text>{item.quantity}</Text>
-          </View>
-        ))} */}
-      {/* </View> */}
     </View>
   );
 };
@@ -79,13 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
     padding: 10,
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: 'white',
   },
   summaryPrice: { color: Colors.primary },
   summaryText: { fontFamily: 'open-sans-bold', fontSize: 18 },

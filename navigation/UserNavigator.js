@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Platform } from 'react-native';
 
 import UserProductScreen from '../screens/user/UserProductScreen';
+import EditProductScreen from '../screens/user/EditProductScreen';
 
 
 import Colors from '../constants/Colors';
@@ -30,6 +31,7 @@ const UserNavigator = () => {
     >
 
       <Stack.Screen name="UserProduct" component={UserProductScreen} options={{title:'Your Products'}} />
+      <Stack.Screen name="EditProduct" component={EditProductScreen} options={{title:'Your Product'}} />
 
     </Stack.Navigator>
   );
