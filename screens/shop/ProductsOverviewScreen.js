@@ -22,11 +22,21 @@ const ProductOverviewScreen = (props) => {
   const status = useSelector((state) => state.products.status);
   const cart = useSelector((state) => state.cart.numOfItem);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
 
   const loadProducts = () => {
     dispatch(fetchAllProduct());
   };
+
+  useEffect(() => {
+    if (status === 'loading') {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [status]);
 
   useEffect(() => {
     loadProducts();
@@ -103,6 +113,8 @@ const ProductOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isLoading}
       data={allProducts}
       renderItem={(itemData) => (
         <ProductItem

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import CartItem from '../../models/cart-item';
-import { addOrder } from './orderReducer';
+import { addOrder, createOrder } from './orderReducer';
 import { deleteProduct } from './productReducers';
 
 const cartSlice = createSlice({
@@ -73,33 +73,41 @@ const cartSlice = createSlice({
         numOfItem: state.numOfItem - 1,
       };
     },
-  },
-  extraReducers: (builders) => {
-    builders.addCase(addOrder, (state, action) => {
+    clearCart: (state, action) => {
       return {
+        ...state,
         items: {},
         totalAmount: 0,
         numOfItem: 0,
       };
-    }),
-      builders.addCase(deleteProduct, (state, action) => {
-        if (!state.items[action.payload]) {
-          return state;
-        }
-        const updatedItems = { ...state.items };
-        const itemTotal = state.items[action.payload].sum;
-        const itemQuantity = state.items[action.payload].quantity;
-        delete updatedItems[action.payload];
-        return {
-          ...state,
-          items: updatedItems,
-          totalAmount: state.totalAmount - itemTotal,
-          numOfItem: state.numOfItem - itemQuantity,
-        };
-      });
+    },
+  },
+  extraReducers: (builders) => {
+    // builders.addCase(createOrder, (state, action) => {
+    //   return {
+    //     items: {},
+    //     totalAmount: 0,
+    //     numOfItem: 0,
+    //   };
+    // }),
+    builders.addCase(deleteProduct, (state, action) => {
+      if (!state.items[action.payload]) {
+        return state;
+      }
+      const updatedItems = { ...state.items };
+      const itemTotal = state.items[action.payload].sum;
+      const itemQuantity = state.items[action.payload].quantity;
+      delete updatedItems[action.payload];
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
+        numOfItem: state.numOfItem - itemQuantity,
+      };
+    });
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

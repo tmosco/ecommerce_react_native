@@ -1,17 +1,35 @@
 import React from 'react';
-import { Text, View, Button, FlatList, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
-import { removeFromCart } from '../../reduxStore/reducers/cartReducer';
-import { addOrder } from '../../reduxStore/reducers/orderReducer';
+import {
+  removeFromCart,
+  clearCart,
+} from '../../reduxStore/reducers/cartReducer';
+import { createOrder } from '../../reduxStore/reducers/orderReducer';
 
 import Card from '../../components/UI/Card';
 
 const CartScreen = (props) => {
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
+  const status = useSelector((state) => state.orders.status);
 
   const dispatch = useDispatch();
+  const submitHandler = () => {
+    dispatch(
+      createOrder({ cartItems: cartItems, totalAmount: cartTotalAmount })
+    );
+    dispatch(clearCart());
+  };
+
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
@@ -27,6 +45,8 @@ const CartScreen = (props) => {
       a.productId > b.productId ? 1 : -1
     );
   });
+
+
   return (
     <View style={styles.screen}>
       <Card style={styles.summary}>
@@ -37,14 +57,16 @@ const CartScreen = (props) => {
           </Text>
         </Text>
 
-        <Button
-          color={Colors.secondary}
-          title="Order Now"
-          disabled={cartItems.length === 0}
-          onPress={() => {
-            dispatch(addOrder({ items: cartItems, amount: cartTotalAmount }));
-          }}
-        />
+        {status === 'loading' ? (
+          <ActivityIndicator size="large" color={Colors.primary} />
+        ) : (
+          <Button
+            color={Colors.secondary}
+            title="Order Now"
+            disabled={cartItems.length === 0}
+            onPress={submitHandler}
+          />
+        )}
       </Card>
       <FlatList
         data={cartItems}
@@ -77,5 +99,7 @@ const styles = StyleSheet.create({
   },
   summaryPrice: { color: Colors.primary },
   summaryText: { fontFamily: 'open-sans-bold', fontSize: 18 },
+
 });
+
 export default CartScreen;

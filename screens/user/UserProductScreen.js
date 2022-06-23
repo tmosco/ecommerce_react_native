@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { deleteProduct } from '../../reduxStore/reducers/productReducers';
+import { deleteProduct, fetchAllProduct } from '../../reduxStore/reducers/productReducers';
 
 import CustomButton from '../../components/UI/HeaderButton';
 
@@ -12,6 +12,10 @@ import Colors from '../../constants/Colors';
 
 const UserProductScreen = (props) => {
   const dispatch = useDispatch();
+
+  
+
+
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -42,15 +46,14 @@ const UserProductScreen = (props) => {
   }, []);
 
   const userProducts = useSelector((state) => state.products.userProducts);
- 
 
-  const deleteHandler = (id ) => {
+  const deleteHandler = (id) => {
     Alert.alert('Are you sure?', 'Do you really want to delete product', [
       { text: 'NO', style: 'default' },
       {
         text: 'Yes',
         style: 'destructive',
-        onPress: () => dispatch(deleteProduct(id)),
+        onPress: () => dispatch(deleteProduct({id})),
       },
     ]);
   };
@@ -79,7 +82,13 @@ const UserProductScreen = (props) => {
               editProductHandler(itemData.item.id);
             }}
           />
-          <Button color="red" title="Delete" onPress={deleteHandler.bind(this,itemData.item.id)} />
+          <Button
+            color="red"
+            title="Delete"
+            onPress={() => {
+              deleteHandler(itemData.item.id);
+            }}
+          />
         </ProductItem>
       )}
     />

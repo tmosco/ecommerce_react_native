@@ -6,11 +6,12 @@ import axios from 'axios';
 
 const initialState = {
   list: [],
-  status: null,
+  status: 'idle',
   availableProducts: [],
   userProducts: [],
   loading: false,
   error: null,
+  createStatus: null,
 };
 
 // export const getPosts = createAsyncThunk('getPosts', async () => {
@@ -63,27 +64,26 @@ export const fetchAllProduct = createAsyncThunk('getProduct', async () => {
 export const deleteProduct = createAsyncThunk(
   'deleteProduct',
   async ({ id }) => {
-    const response = await axios.delete(
-      'https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json',
-      {}
+    await axios.delete(
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json`
     );
   }
 );
 
-// export const updateProduct = createAsyncThunk(
-//   'updateProduct',
-//   async ({ title, imageUrl, description}) => {
-//    await axios.patch(
-//       `https://my-food-app-c854d-default-rtdb.firebaseio.com/products${id}.json`,
-//       {
-//         title,
-//         imageUrl,
-//         description,
-//       }
-//     );
-
-//   }
-// );
+export const updateProduct = createAsyncThunk(
+  'updateProduct',
+  async ({ id, title, imageUrl, description }) => {
+    console.log(id)
+    await axios.patch(
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json`,
+      {
+        title,
+        imageUrl,
+        description,
+      }
+    );
+  }
+);
 
 const productSlice = createSlice({
   name: 'product',
@@ -114,52 +114,45 @@ const productSlice = createSlice({
     //   };
     // },
 
-    updateProduct: (state, action) => {
-      const currentProduct = state.userProducts.findIndex(
-        (product) => product.id === action.payload.id
-      );
-      const updatedProduct = new Product(
-        action.payload.id,
-        state.userProducts[currentProduct].ownerId,
-        action.payload.title,
-        action.payload.imageUrl,
-        action.payload.description,
-        state.userProducts[currentProduct].price
-      );
+    //   updateProduct: (state, action) => {
+    //     const currentProduct = state.userProducts.findIndex(
+    //       (product) => product.id === action.payload.id
+    //     );
+    //     const updatedProduct = new Product(
+    //       action.payload.id,
+    //       state.userProducts[currentProduct].ownerId,
+    //       action.payload.title,
+    //       action.payload.imageUrl,
+    //       action.payload.description,
+    //       state.userProducts[currentProduct].price
+    //     );
 
-      const updatedUserProducts = [...state.userProducts];
-      updatedUserProducts[currentProduct] = updatedProduct;
-      const availableProductIndex = state.availableProducts.findIndex(
-        (product) => product.id === action.payload.id
-      );
-      const updatedAvailableProduct = [...state.availableProducts];
-      updatedAvailableProduct[availableProductIndex] = updatedProduct;
+    //     const updatedUserProducts = [...state.userProducts];
+    //     updatedUserProducts[currentProduct] = updatedProduct;
+    //     const availableProductIndex = state.availableProducts.findIndex(
+    //       (product) => product.id === action.payload.id
+    //     );
+    //     const updatedAvailableProduct = [...state.availableProducts];
+    //     updatedAvailableProduct[availableProductIndex] = updatedProduct;
 
-      return {
-        ...state,
-        availableProducts: updatedAvailableProduct,
-        userProducts: updatedUserProducts,
-      };
-    },
+    //     return {
+    //       ...state,
+    //       availableProducts: updatedAvailableProduct,
+    //       userProducts: updatedUserProducts,
+    //     };
+    //   },
   },
   extraReducers: {
     [fetchCreateProduct.pending]: (state, action) => {
-      state.status = 'loading';
+      state.createStatus = 'loading';
     },
-    [fetchCreateProduct.fulfilled]: (state, { payload, meta }) => {
-      const newProduct = new Product(
-        payload.name,
-        'u1',
-        meta.arg.imageUrl,
-        meta.arg.title,
-        meta.arg.description,
-        meta.arg.price
-      );
-      state.availableProducts.push(newProduct);
-    
+    [fetchCreateProduct.fulfilled]: (state, action) => {
+      state.createStatus = 'success';
+      // state.error='false'
     },
     [fetchCreateProduct.rejected]: (state, action) => {
-      state.status = 'failed';
+      state.createStatus = 'failed';
+      state.error = 'Please try again later';
     },
     [fetchAllProduct.pending]: (state, action) => {
       state.status = 'loading';
@@ -172,19 +165,39 @@ const productSlice = createSlice({
     [fetchAllProduct.rejected]: (state, action) => {
       state.status = 'failed';
     },
-  // [updateProduct.pending]:(state,action) =>{
-    
-  // },
-  // [updateProduct.fulfilled]:(state,action) =>{
-  //   // state.availableProducts = action.availableProducts
-
-  // },
-  // [updateProduct.rejected]:(state,action) =>{
-
-  // }
+    [updateProduct.pending]: (state, action) => {},
+    [updateProduct.fulfilled]: (state, action) => {
+      // console.log(action)
+      const currentProduct = state.userProducts.findIndex(
+        (product) => product.id === action.meta.arg.id
+      );
+      const updatedProduct = new Product(
+        action.meta.arg.id,
+        state.userProducts[currentProduct].ownerId,
+        action.meta.arg.title,
+        action.meta.arg.imageUrl,
+        action.meta.arg.description,
+        state.userProducts[currentProduct].price
+      );
+      state.userProducts[currentProduct] = updatedProduct;
+      state.availableProducts[currentProduct] = updatedProduct;
+      state.createStatus="success"
+    },
+    [updateProduct.rejected]: (state, action) => {
+      console.log('rejected');
+    },
+    [deleteProduct.fulfilled]: (state, action) => {
+      state.userProducts = state.userProducts.filter(
+        (product) => product.id !== action.meta.arg.id
+      );
+      state.availableProducts = state.availableProducts.filter(
+        (product) => product.id !== action.meta.arg.id
+      );
+    },
+    [deleteProduct.rejected]: (state, action) => {
+      console.log('not deleted');
+    },
   },
 });
-
-export const {updateProduct, createProduct } = productSlice.actions;
 
 export default productSlice.reducer;

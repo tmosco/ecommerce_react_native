@@ -1,17 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomButton from '../../components/UI/HeaderButton';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   fetchCreateProduct,
-  fetchAllProduct,
-} from '../../reduxStore/reducers/productReducers';
-import {
-  createProduct,
   updateProduct,
 } from '../../reduxStore/reducers/productReducers';
+
 import { useForm, Controller } from 'react-hook-form';
+import Colors from '../../constants/Colors';
 
 const EditProductScreen = (props) => {
   const {
@@ -23,17 +29,18 @@ const EditProductScreen = (props) => {
     formState: { errors },
   } = useForm();
 
+  // const [status, setStatus] = useState(useSelector((state) => state.products.createStatus))
+  // const [error, setError] = useState(useSelector((state) => state.products.error))
+
   const productId = props.route.params.productId;
 
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((product) => productId === product.id)
   );
+  const status = useSelector((state) => state.products.createStatus);
+  const error = useSelector((state) => state.products.error);
 
   const dispatch = useDispatch();
-
-  // function onSubmit() {
-  //   dispatch(fetchAllProduct());
-  // }
 
   const submitHandler = (data) => {
     if (productId) {
@@ -70,12 +77,25 @@ const EditProductScreen = (props) => {
               Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
             }
             onPress={handleSubmit(submitHandler)}
+            onReset={reset}
             // onPress={onSubmit()}
           />
         </HeaderButtons>
       ),
     });
   }, []);
+
+  if (status === 'loading') {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+  }
 
   return (
     <ScrollView>
@@ -88,10 +108,11 @@ const EditProductScreen = (props) => {
               <TextInput
                 style={styles.input}
                 onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.title : value}
+                defaultValue={editedProduct ? editedProduct.title : value}
                 autoCapitalize="sentences"
                 autoCorrect
                 returnKeyType="next"
+                value={value}
                 // onEndEditing={() => console.log('onendEdidi')}
                 // onSubmitEditing={() => console.log('onendEdidi')}
               />
@@ -108,7 +129,8 @@ const EditProductScreen = (props) => {
               <TextInput
                 style={styles.input}
                 onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.imageUrl : value}
+                defaultValue={editedProduct ? editedProduct.imageUrl : value}
+                value={value}
               />
             )}
             name="imageUrl"
@@ -141,7 +163,8 @@ const EditProductScreen = (props) => {
               <TextInput
                 style={styles.input}
                 onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.description : value}
+                defaultValue={editedProduct ? editedProduct.description : value}
+                value={value}
               />
             )}
             name="description"
@@ -166,6 +189,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
