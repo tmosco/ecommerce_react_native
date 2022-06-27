@@ -65,7 +65,7 @@ const orderSlice = createSlice({
       };
     },
   },
-  extraReducers: {
+  extraReducers: { 
     [createOrder.pending]: (state, action) => {
       state.status='loading'
     },
