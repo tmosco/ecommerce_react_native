@@ -1,9 +1,10 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, create } from '@react-navigation/stack';
 import { Platform } from 'react-native';
 
 import ProductOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import CartScreen from '../screens/shop/CartScreen';
+
 
 
 
@@ -31,6 +32,7 @@ const ShopNavigator = () => {
       }}
       
     >
+      
       <Stack.Screen name="ProductsOverview" component={ProductOverviewScreen} />
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
       <Stack.Screen name="Cart" component={CartScreen} />

@@ -1,5 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ShopNavigator from './ShopNavigator';
+import HomeNavigator from './HomeNavigator';
 import CustomDrawer from '../components/UI/CustomDrawer';
 import OrderNavigator from './OrderNavigator';
 import UserNavigator from './UserNavigator';
@@ -27,7 +28,7 @@ function DrawerNavigator() {
     >
       <Drawer.Screen
         name="All Products"
-        component={ShopNavigator}
+        component={HomeNavigator}
         options={{
           title: 'Product',
           drawerIcon: (drawerConfig) => (
