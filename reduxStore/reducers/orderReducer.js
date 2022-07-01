@@ -4,15 +4,18 @@ import axios from 'axios';
 
 const initialState = {
   orders: [],
-  status:null,
-  error:null
+  status: null,
+  error: null,
 };
 
 export const createOrder = createAsyncThunk(
   'order/createOrder',
-  async ({ cartItems, totalAmount }) => {
+  async ({ cartItems, totalAmount }, { getState }) => {
+    const { auth } = getState();
+    const userId = auth.userId;
+    const token = auth.token;
     const response = await axios.post(
-      'https://my-food-app-c854d-default-rtdb.firebaseio.com/orders/u1.json',
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/orders/${userId}.json?auth=${token}`,
       {
         cartItems,
         totalAmount,
@@ -24,28 +27,31 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-export const fetchAllOrders = createAsyncThunk('getOrders', async () => {
-  const response = await axios.get(
-    
-    'https://my-food-app-c854d-default-rtdb.firebaseio.com/orders/u1.json'
-  );
-
-  const loadedProducts = [];
-  const data = response.data;
-  for (const key in data) {
-    loadedProducts.push(
-      new Order(
-        key,
-        data[key].cartItems,
-        data[key].totalAmount,
-        data[key].date
-      )
+export const fetchAllOrders = createAsyncThunk(
+  'getOrders',
+  async (arg, { getState }) => {
+    const { auth } = getState();
+    const userId = auth.userId;
+    const response = await axios.get(
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/orders/${userId}.json`
     );
+
+    const loadedProducts = [];
+    const data = response.data;
+    for (const key in data) {
+      loadedProducts.push(
+        new Order(
+          key,
+          data[key].cartItems,
+          data[key].totalAmount,
+          data[key].date
+        )
+      );
+    }
+
+    return loadedProducts;
   }
-
-
-  return loadedProducts;
-});
+);
 
 const orderSlice = createSlice({
   name: 'order',
@@ -65,9 +71,9 @@ const orderSlice = createSlice({
       };
     },
   },
-  extraReducers: { 
+  extraReducers: {
     [createOrder.pending]: (state, action) => {
-      state.status='loading'
+      state.status = 'loading';
     },
     [createOrder.fulfilled]: (state, action) => {
       const items = action.meta.arg.cartItems;
@@ -79,17 +85,17 @@ const orderSlice = createSlice({
       state.status = 'success';
     },
     [createOrder.rejected]: (state, action) => {
-      state.status='failed'
+      state.status = 'failed';
     },
     [fetchAllOrders.pending]: (state, action) => {
-      state.status='loading'
+      state.status = 'loading';
     },
     [fetchAllOrders.fulfilled]: (state, action) => {
       state.status = 'success';
       state.orders = action.payload;
     },
     [fetchAllOrders.rejected]: (state, action) => {
-      state.error=action.error.message
+      state.error = action.error.message;
     },
   },
 });

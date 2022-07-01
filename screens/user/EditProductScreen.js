@@ -42,6 +42,12 @@ const EditProductScreen = (props) => {
 
   const dispatch = useDispatch();
 
+
+
+  useEffect(()=>{
+    submitHandler
+  },[status, error])
+
   const submitHandler = (data) => {
     if (productId) {
       dispatch(
@@ -62,7 +68,9 @@ const EditProductScreen = (props) => {
         })
       );
     }
-    props.navigation.goBack();
+    if (status === 'success' && !error) {
+      props.navigation.goBack();
+    }
   };
 
   useEffect(() => {

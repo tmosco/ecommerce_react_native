@@ -25,21 +25,38 @@ const initialState = {
 export const fetchCreateProduct = createAsyncThunk(
   'product/createProduct',
   async ({ title, imageUrl, description, price }) => {
-    const response = await axios.post(
-      'https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json',
-      {
-        title,
-        imageUrl,
-        description,
-        price,
-      }
-    );
+    const userId = auth.userId;
+    const token = auth.token;
+    const response = await axios
+      .post(
+        `https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json?auth=${token}`,
+        {
+          title,
+          imageUrl,
+          description,
+          price,
+        }
+      )
+      .catch(function (error) {
+        console.log(error);
+        // if (error.response) {
+        // const errorId = error.response.data.error.message;
+        // let errorMessage = 'Something went wrong';
+        // if (errorId === 'EMAIL_NOT_FOUND') {
+        //   errorMessage = 'This email could not be found!';
+        // } else if (errorId === 'INVALID_PASSWORD') {
+        //   errorMessage = 'This password is not valid';
+        // }
+        // throw new Error(errorMessage);
+        // }
+      });
     // const resData = response.json();
     return response.data;
   }
 );
 
 export const fetchAllProduct = createAsyncThunk('getProduct', async () => {
+  
   const response = await axios.get(
     'https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json'
   );
@@ -64,18 +81,23 @@ export const fetchAllProduct = createAsyncThunk('getProduct', async () => {
 export const deleteProduct = createAsyncThunk(
   'deleteProduct',
   async ({ id }) => {
+    const userId = auth.userId;
+    const token = auth.token;
     await axios.delete(
-      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json`
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`
     );
   }
 );
 
 export const updateProduct = createAsyncThunk(
   'updateProduct',
-  async ({ id, title, imageUrl, description }) => {
-    console.log(id)
+  async ({ id, title, imageUrl, description }, { getState }) => {
+    const { auth } = getState();
+    const userId = auth.userId;
+    const token = auth.token;
+    console.log(id);
     await axios.patch(
-      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json`,
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
       {
         title,
         imageUrl,
@@ -148,6 +170,7 @@ const productSlice = createSlice({
     },
     [fetchCreateProduct.fulfilled]: (state, action) => {
       state.createStatus = 'success';
+      console.log(action);
       // state.error='false'
     },
     [fetchCreateProduct.rejected]: (state, action) => {
@@ -181,7 +204,8 @@ const productSlice = createSlice({
       );
       state.userProducts[currentProduct] = updatedProduct;
       state.availableProducts[currentProduct] = updatedProduct;
-      state.createStatus="success"
+      state.createStatus = 'success';
+      state.error=null
     },
     [updateProduct.rejected]: (state, action) => {
       console.log('rejected');
