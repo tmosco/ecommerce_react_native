@@ -1,0 +1,78 @@
+[33mcommit d54ced80674088ebfc72809e3017e75aae714061[m[33m ([m[1;36mHEAD -> [m[1;32m9-userAuthentication[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Fri Jul 1 12:10:06 2022 +0100
+
+    get token and userId
+
+[33mcommit c22e2757879f94958cd67d129f7d1dbfa488769d[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon Jun 27 18:26:41 2022 +0100
+
+    login page for both log in and sign up
+
+[33mcommit 6c81572114e0307e0899871aa517a0f8a201de19[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon Jun 27 16:48:15 2022 +0100
+
+     login page
+
+[33mcommit eb435bd0448b98354465c86679e1a2d724af37fe[m[33m ([m[1;32m8-ordersapi[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Thu Jun 23 17:30:15 2022 +0100
+
+    refresh page by pulling down
+
+[33mcommit 65d0322389c02d0f564110e80354dff8652d3f00[m[33m ([m[1;32m7-reactForm[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Wed Jun 15 17:45:58 2022 +0100
+
+    update
+
+[33mcommit 1e78b2a7bb3eb091d7786319c3953639fa99d746[m[33m ([m[1;32m6-useProductScreen[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Fri Jun 3 09:08:23 2022 +0100
+
+    extra reducters and delete action
+
+[33mcommit 906cbea7c95982d8874ef8a0000dd7907547a077[m[33m ([m[1;32m5-OrderScreen[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Thu Jun 2 11:40:05 2022 +0100
+
+    create the orderScreen
+
+[33mcommit 11668b33952e1f57fa601730ab6e9797e985f0ab[m[33m ([m[1;32m4-cart-logic[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Wed Jun 1 19:48:24 2022 +0100
+
+    fix order on drawer
+
+[33mcommit 2a2dcf0873c958be4c41e99464db5788eaddeff7[m[33m ([m[1;32m3-productDetailPage[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon May 30 13:49:27 2022 +0100
+
+    styling of productDetail screen
+    adding fonts
+
+[33mcommit 122fe1a91b91afbba94b9df8bfa7b1f21518d266[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon May 30 12:41:18 2022 +0100
+
+    shadow styling on productOverview and props to productDetail screen
+
+[33mcommit d895b9b907f5063c277c1b447c52ebedc081670a[m[33m ([m[1;32m2-styling[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon May 30 08:54:54 2022 +0100
+
+    products Overview working
+
+[33mcommit c7777099b35d0bf336686585f1bc9e49f20f0801[m[33m ([m[1;32m1-default-settings[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon May 23 17:28:41 2022 +0100
+
+    add stack Navigator and style the header
+
+[33mcommit ea2900ef4ccf7f50491510912012c654505d9ab7[m[33m ([m[1;32mmaster[m[33m)[m
+Author: tmosco <tmosco_tayo@yahoo.com>
+Date:   Mon May 23 15:40:35 2022 +0100
+
+    Created a new Expo app

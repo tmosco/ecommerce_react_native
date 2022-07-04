@@ -13,6 +13,18 @@ import Colors from '../../constants/Colors';
 const UserProductScreen = (props) => {
   const dispatch = useDispatch();
 
+  const loadProducts = () => {
+    dispatch(fetchAllProduct());
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const willFocusSub = props.navigation.addListener('focus', loadProducts);
+    return willFocusSub;
+  }, [loadProducts]);
   
 
 
@@ -44,9 +56,9 @@ const UserProductScreen = (props) => {
       ),
     });
   }, []);
+  
 
   const userProducts = useSelector((state) => state.products.userProducts);
-
   const deleteHandler = (id) => {
     Alert.alert('Are you sure?', 'Do you really want to delete product', [
       { text: 'NO', style: 'default' },
@@ -64,6 +76,12 @@ const UserProductScreen = (props) => {
       // productTitle: title,
     });
   };
+
+  if(userProducts.length === 0 ){
+    return <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <Text>No Products </Text>
+    </View>
+  }
 
   return (
     <FlatList

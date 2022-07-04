@@ -22,65 +22,64 @@ const initialState = {
 //   return response;
 // });
 
-export const fetchCreateProduct = createAsyncThunk(
+export const CreateProduct = createAsyncThunk(
   'product/createProduct',
-  async ({ title, imageUrl, description, price }) => {
+  async ({ title, imageUrl, description, price }, { getState }) => {
+    const { auth } = getState();
     const userId = auth.userId;
     const token = auth.token;
-    const response = await axios
-      .post(
-        `https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json?auth=${token}`,
-        {
-          title,
-          imageUrl,
-          description,
-          price,
-        }
-      )
-      .catch(function (error) {
-        console.log(error);
-        // if (error.response) {
-        // const errorId = error.response.data.error.message;
-        // let errorMessage = 'Something went wrong';
-        // if (errorId === 'EMAIL_NOT_FOUND') {
-        //   errorMessage = 'This email could not be found!';
-        // } else if (errorId === 'INVALID_PASSWORD') {
-        //   errorMessage = 'This password is not valid';
-        // }
-        // throw new Error(errorMessage);
-        // }
-      });
-    // const resData = response.json();
+    const response = await axios.post(
+      `https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json?auth=${token}`,
+      {
+        title,
+        imageUrl,
+        description,
+        price,
+        userId: userId,
+      }
+    );
+
     return response.data;
   }
 );
 
-export const fetchAllProduct = createAsyncThunk('getProduct', async () => {
-  
-  const response = await axios.get(
-    'https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json'
-  );
-  const loadedProducts = [];
-  const data = response.data;
-  for (const key in data) {
-    loadedProducts.push(
-      new Product(
-        key,
-        'ui',
-        data[key].title,
-        data[key].imageUrl,
-        data[key].description,
-        data[key].price
-      )
+export const fetchAllProduct = createAsyncThunk(
+  'getProduct',
+  async (_, { getState }) => {
+    const { auth } = getState();
+    const userId = auth.userId;
+    const response = await axios.get(
+      'https://my-food-app-c854d-default-rtdb.firebaseio.com/products.json'
     );
-  }
 
-  return loadedProducts;
-});
+    const loadedProducts = [];
+
+    const data = response.data;
+    for (const key in data) {
+      loadedProducts.push(
+        new Product(
+          key,
+          data[key].userId,
+          data[key].title,
+          data[key].imageUrl,
+          data[key].description,
+          data[key].price
+        )
+      );
+    }
+    const userProducts = loadedProducts.filter(
+      (prod) => prod.ownerId === userId
+    );
+
+    // console.log(userProduct);
+    return { loadedProducts, userProducts };
+  }
+);
 
 export const deleteProduct = createAsyncThunk(
   'deleteProduct',
-  async ({ id }) => {
+  async ({ id }, { getState }) => {
+    const { auth } = getState();
     const userId = auth.userId;
     const token = auth.token;
     await axios.delete(
@@ -92,10 +91,10 @@ export const deleteProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   'updateProduct',
   async ({ id, title, imageUrl, description }, { getState }) => {
+    console.log(title);
     const { auth } = getState();
     const userId = auth.userId;
     const token = auth.token;
-    console.log(id);
     await axios.patch(
       `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
       {
@@ -112,18 +111,18 @@ const productSlice = createSlice({
   initialState,
 
   reducers: {
-    createProduct: (state, action) => {
-      const newProduct = new Product(
-        new Date().toString(),
-        'u1',
-        action.payload.imageUrl,
-        action.payload.title,
-        action.payload.description,
-        action.payload.price
-      );
-      state.availableProducts.push(newProduct);
-      state.userProducts.push(newProduct);
-    },
+    // createProduct: (state, action) => {
+    //   const newProduct = new Product(
+    //     new Date().toString(),
+    //     'u1',
+    //     action.payload.imageUrl,
+    //     action.payload.title,
+    //     action.payload.description,
+    //     action.payload.price
+    //   );
+    //   state.availableProducts.push(newProduct);
+    //   state.userProducts.push(newProduct);
+    // },
     // deleteProduct: (state, action) => {
     //   return {
     //     ...state,
@@ -135,7 +134,6 @@ const productSlice = createSlice({
     //     ),
     //   };
     // },
-
     //   updateProduct: (state, action) => {
     //     const currentProduct = state.userProducts.findIndex(
     //       (product) => product.id === action.payload.id
@@ -148,7 +146,6 @@ const productSlice = createSlice({
     //       action.payload.description,
     //       state.userProducts[currentProduct].price
     //     );
-
     //     const updatedUserProducts = [...state.userProducts];
     //     updatedUserProducts[currentProduct] = updatedProduct;
     //     const availableProductIndex = state.availableProducts.findIndex(
@@ -156,7 +153,6 @@ const productSlice = createSlice({
     //     );
     //     const updatedAvailableProduct = [...state.availableProducts];
     //     updatedAvailableProduct[availableProductIndex] = updatedProduct;
-
     //     return {
     //       ...state,
     //       availableProducts: updatedAvailableProduct,
@@ -165,25 +161,28 @@ const productSlice = createSlice({
     //   },
   },
   extraReducers: {
-    [fetchCreateProduct.pending]: (state, action) => {
+    [CreateProduct.pending]: (state, action) => {
       state.createStatus = 'loading';
     },
-    [fetchCreateProduct.fulfilled]: (state, action) => {
+    [CreateProduct.fulfilled]: (state, action) => {
       state.createStatus = 'success';
-      console.log(action);
-      // state.error='false'
+      console.log(action)
     },
-    [fetchCreateProduct.rejected]: (state, action) => {
+    [CreateProduct.rejected]: (state, action) => {
       state.createStatus = 'failed';
       state.error = 'Please try again later';
+      // console.log(action)
     },
     [fetchAllProduct.pending]: (state, action) => {
       state.status = 'loading';
     },
     [fetchAllProduct.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.availableProducts = action.payload;
-      state.userProducts = action.payload;
+      state.availableProducts = action.payload.loadedProducts;
+      state.userProducts=action.payload.userProducts
+      
+
+      // state.userProducts = action.payload.filter(prod => prod.ownerId===userId );
     },
     [fetchAllProduct.rejected]: (state, action) => {
       state.status = 'failed';
@@ -196,7 +195,7 @@ const productSlice = createSlice({
       );
       const updatedProduct = new Product(
         action.meta.arg.id,
-        state.userProducts[currentProduct].ownerId,
+        state.userProducts[currentProduct].userId,
         action.meta.arg.title,
         action.meta.arg.imageUrl,
         action.meta.arg.description,
@@ -205,7 +204,6 @@ const productSlice = createSlice({
       state.userProducts[currentProduct] = updatedProduct;
       state.availableProducts[currentProduct] = updatedProduct;
       state.createStatus = 'success';
-      state.error=null
     },
     [updateProduct.rejected]: (state, action) => {
       console.log('rejected');

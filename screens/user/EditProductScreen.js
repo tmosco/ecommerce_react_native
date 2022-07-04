@@ -12,7 +12,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomButton from '../../components/UI/HeaderButton';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  fetchCreateProduct,
+  CreateProduct,
   updateProduct,
 } from '../../reduxStore/reducers/productReducers';
 
@@ -42,34 +42,42 @@ const EditProductScreen = (props) => {
 
   const dispatch = useDispatch();
 
+  console.log(status);
 
+  useEffect(() => {
+    submitHandler;
+  }, [status]);
 
-  useEffect(()=>{
-    submitHandler
-  },[status, error])
-
-  const submitHandler = (data) => {
-    if (productId) {
-      dispatch(
-        updateProduct({
-          id: productId,
-          title: data.title,
-          imageUrl: data.imageUrl,
-          description: data.description,
-        })
-      );
-    } else {
-      dispatch(
-        fetchCreateProduct({
-          title: data.title,
-          imageUrl: data.imageUrl,
-          description: data.description,
-          price: parseFloat(data.price),
-        })
-      );
-    }
-    if (status === 'success' && !error) {
+  const success = () => {
+    if (status === 'success') {
       props.navigation.goBack();
+    }
+  };
+
+  const submitHandler = async (data) => {
+    try {
+      if (productId) {
+        await dispatch(
+          updateProduct({
+            id: productId,
+            title: data.title,
+            imageUrl: data.imageUrl,
+            description: data.description,
+          })
+        );
+      } else {
+        await dispatch(
+          CreateProduct({
+            title: data.title,
+            imageUrl: data.imageUrl,
+            description: data.description,
+            price: parseFloat(data.price),
+          })
+        );
+        props.navigation.goBack();
+      }
+    } catch (err) {
+      console.log(err.message);
     }
   };
 

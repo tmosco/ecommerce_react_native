@@ -8,6 +8,7 @@ import AuthNavigator from './AuthNavigator';
 const Stack = createStackNavigator();
 const HomeNavigator = () => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+  // const isSignedIn = true
   return (
     <>
       {isSignedIn
