@@ -1,14 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Order from '../../models/order';
 import axios from 'axios';
+import { AsyncStorage } from 'react-native';
 
 const initialState = {
   status: null,
   error: '',
-  isSignedIn: false,
+  authenticated: false,
   token: null,
   userId: null,
 };
+
+const saveDataToStorage = (token, userId, expirationDate) => {
+  AsyncStorage.setItem(
+    'userData',
+    JSON.stringify({
+      token: token,
+      userId: userId,
+      expiryDate: expirationDate.toISOString(),
+    })
+  );
+};
+
+export const authenticate = createAsyncThunk('', async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const transformedData = JSON.parse(userData);
+
+  return transformedData;
+});
 
 export const createUser = createAsyncThunk(
   'user/signUp',
@@ -68,15 +87,37 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk('', async () => {
+  await AsyncStorage.removeItem('userData');
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
+  // reducers: {
+  //   logout: (state, action) => {
+  //     return {
+  //       ini,
+  //     };
+  //   },
+  // },
+
   extraReducers: {
     [createUser.pending]: (state, action) => {
       state.status = 'loading';
     },
     [createUser.fulfilled]: (state, action) => {
       state.status = 'success';
+      const token = action.payload.idToken;
+      const id = action.payload.localId;
+      state.token = token;
+      state.userId = id;
+
+      const expirationDate = new Date(
+        new Date().getTime() + parseInt(action.payload.expiresIn) * 1000
+      );
+
+      saveDataToStorage(token, id, expirationDate);
     },
     [createUser.rejected]: (state, action) => {
       state.status = 'failed';
@@ -88,13 +129,35 @@ const authSlice = createSlice({
     },
     [loginUser.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.isSignedIn = action.payload.registered;
-      state.token = action.payload.idToken;
-      state.userId= action.payload.localId;
+      state.authenticated = action.payload.registered;
+      const token = action.payload.idToken;
+      const id = action.payload.localId;
+      state.token = token;
+      state.userId = id;
+
+      const expirationDate = new Date(
+        new Date().getTime() + parseInt(action.payload.expiresIn) * 1000
+      );
+
+      saveDataToStorage(token, id, expirationDate);
     },
     [loginUser.rejected]: (state, action) => {
       state.status = 'failed';
       state.error = action.error.message;
+    },
+    [logoutUser.fulfilled]: (state, action) => {
+      initialState;
+    },
+    [authenticate.fulfilled]: (state, action) => {
+      const token = action.payload.token;
+      const userId = action.payload.userId;
+      const expireDate = action.payload.expiryDate;
+      if (expireDate <= new Date() || !token || !userId) {
+        state.authenticated = false;
+      }
+      state.authenticated = true;
+      state.token = token;
+      state.userId = userId;
     },
   },
 });

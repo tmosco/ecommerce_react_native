@@ -43,6 +43,7 @@ const OrderScreen = (props) => {
     dispatch(fetchAllOrders());
   }, [dispatch]);
 
+
   if (error) {
     Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
   }
