@@ -4,15 +4,15 @@ import {
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import ShopNavigator from './ShopNavigator';
+import { ProductNavigator,OrderNavigator,AdminNavigator } from './ShopNavigator';
+
 import HomeNavigator from './HomeNavigator';
 import CustomDrawer from '../components/UI/CustomDrawer';
-import OrderNavigator from './OrderNavigator';
-import UserNavigator from './UserNavigator';
+
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../reduxStore/reducers/authReducer';
+import { logout } from '../reduxStore/reducers/authReducer';
 
 
 import CartScreen from '../screens/shop/CartScreen';
@@ -33,7 +33,7 @@ const CustomDrawerContent = (props) => {
       color={Colors.primary}
       labelStyle={{fontSize:26}}
         label="Logout"
-        onPress={() => {dispatch(logoutUser()); props.navigation.navigate('Login')}}
+        onPress={() => {dispatch(logout()); }}
         style={{ color: Colors.primary, flex: 1 }}
       />
     </View>
@@ -55,7 +55,7 @@ function DrawerNavigator() {
     >
       <Drawer.Screen
         name="All Products"
-        component={HomeNavigator}
+        component={ProductNavigator}
         options={{
           title: 'Product',
           drawerIcon: (drawerConfig) => (
@@ -82,8 +82,8 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="User"
-        component={UserNavigator}
+        name="Admin"
+        component={AdminNavigator}
         options={{
           title: 'Admin',
           drawerIcon: (drawerConfig) => (

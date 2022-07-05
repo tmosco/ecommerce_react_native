@@ -12,6 +12,7 @@ import 'react-native-gesture-handler';
 import DrawerNavigator from './navigation/DrawerNavigator';
 
 import 'react-native-gesture-handler';
+import AppNavigator from './navigation/AppNavigator';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -36,9 +37,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <DrawerNavigator />
-      </NavigationContainer>
+     <AppNavigator/>
     </Provider>
   );
 }
