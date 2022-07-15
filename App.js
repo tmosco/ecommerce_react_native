@@ -8,9 +8,6 @@ import AppLoading  from 'expo-app-loading';
 import * as Font from 'expo-font';
 import 'react-native-gesture-handler';
 
-
-import DrawerNavigator from './navigation/DrawerNavigator';
-
 import 'react-native-gesture-handler';
 import AppNavigator from './navigation/AppNavigator';
 

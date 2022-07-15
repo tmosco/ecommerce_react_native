@@ -41,6 +41,7 @@ export const createUser = createAsyncThunk(
           returnSecureToken: true,
         }
       );
+      return response.data;
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -53,8 +54,6 @@ export const createUser = createAsyncThunk(
         throw new Error(error);
       }
     }
-
-    return response.data;
   }
 );
 
@@ -88,7 +87,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = () => {
-   AsyncStorage.removeItem('userData');
+  AsyncStorage.removeItem('userData');
 };
 
 const authSlice = createSlice({
@@ -96,7 +95,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state, action) => {
-      logoutUser()
+      logoutUser();
       return {
         initialState,
       };
@@ -136,8 +135,7 @@ const authSlice = createSlice({
       const id = action.payload.localId;
       state.token = token;
       state.userId = id;
-      // state.authenticated=true
-
+    
       const expirationDate = new Date(
         new Date().getTime() + parseInt(action.payload.expiresIn) * 1000
       );
@@ -149,10 +147,9 @@ const authSlice = createSlice({
       state.error = action.error.message;
     },
     [logoutUser.fulfilled]: (state, action) => {
-      console.log(action)
-      console.log("action")
+      console.log(action);
+      console.log('action');
       initialState;
-      state.authenticated=false;
     },
     [authenticate.fulfilled]: (state, action) => {
       const token = action.payload.token;

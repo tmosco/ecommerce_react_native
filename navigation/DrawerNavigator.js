@@ -33,20 +33,6 @@ const CustomDrawerContent = (props) => {
   const dispatch = useDispatch();
 
   return (
-    //   <View style={{ flex: 1, paddingTop: 20 }}>
-    //   <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-    //     <DrawerItemList {...props} />
-    //     <Button
-    //       title="Logout"
-    //       color={Colors.primary}
-    //       onPress={() => {
-    //         dispatch(logout())
-    //       }}
-    //     />
-    //   </SafeAreaView>
-    // </View>
-    // );
-
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View

@@ -22,7 +22,7 @@ const initialState = {
 //   return response;
 // });
 
-export const CreateProduct = createAsyncThunk(
+export const createProduct = createAsyncThunk(
   'product/createProduct',
   async ({ title, imageUrl, description, price }, { getState }) => {
     const { auth } = getState();
@@ -161,14 +161,14 @@ const productSlice = createSlice({
     //   },
   },
   extraReducers: {
-    [CreateProduct.pending]: (state, action) => {
+    [createProduct.pending]: (state, action) => {
       state.createStatus = 'loading';
     },
-    [CreateProduct.fulfilled]: (state, action) => {
+    [createProduct.fulfilled]: (state, action) => {
       state.createStatus = 'success';
       console.log(action)
     },
-    [CreateProduct.rejected]: (state, action) => {
+    [createProduct.rejected]: (state, action) => {
       state.createStatus = 'failed';
       state.error = 'Please try again later';
       // console.log(action)

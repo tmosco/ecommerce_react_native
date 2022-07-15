@@ -54,7 +54,13 @@ const EditProductScreen = (props) => {
     }
   };
 
-  const submitHandler = async (data) => {
+  const submitHandler = useCallback(async () => {
+    if (!formState.formIsValid) {
+      Alert.alert('Wrong input!', 'Please check the errors in the form.', [
+        { text: 'Okay' }
+      ]);
+      return;
+    }
     try {
       if (productId) {
         await dispatch(
@@ -79,7 +85,7 @@ const EditProductScreen = (props) => {
     } catch (err) {
       console.log(err.message);
     }
-  };
+  });
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -129,8 +135,6 @@ const EditProductScreen = (props) => {
                 autoCorrect
                 returnKeyType="next"
                 value={value}
-                // onEndEditing={() => console.log('onendEdidi')}
-                // onSubmitEditing={() => console.log('onendEdidi')}
               />
             )}
             name="title"
