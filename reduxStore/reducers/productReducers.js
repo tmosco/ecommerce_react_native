@@ -71,7 +71,7 @@ export const fetchAllProduct = createAsyncThunk(
       (prod) => prod.ownerId === userId
     );
 
-    // console.log(userProduct);
+
     return { loadedProducts, userProducts };
   }
 );
@@ -166,12 +166,11 @@ const productSlice = createSlice({
     },
     [createProduct.fulfilled]: (state, action) => {
       state.createStatus = 'success';
-      console.log(action)
     },
     [createProduct.rejected]: (state, action) => {
       state.createStatus = 'failed';
       state.error = 'Please try again later';
-      // console.log(action)
+     
     },
     [fetchAllProduct.pending]: (state, action) => {
       state.status = 'loading';
@@ -189,7 +188,6 @@ const productSlice = createSlice({
     },
     [updateProduct.pending]: (state, action) => {},
     [updateProduct.fulfilled]: (state, action) => {
-      // console.log(action)
       const currentProduct = state.userProducts.findIndex(
         (product) => product.id === action.meta.arg.id
       );
