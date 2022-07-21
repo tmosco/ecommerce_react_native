@@ -6,15 +6,35 @@ import {
   AsyncStorage
 } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { setDidTryAL,authenticate } from '../reduxStore/reducers/authReducer';
 
 import Colors from '../constants/Colors';
-import { authenticate } from '../reduxStore/reducers/authReducer';
+
 
 const StartupScreen = props => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(authenticate());
+  useEffect(() => {  
+    const tryLogin = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      if (!userData) {
+        dispatch(setDidTryAL());
+        return;
+      }
+      const transformedData = JSON.parse(userData);
+      const { token, userId, expiryDate } = transformedData;
+      const expirationDate = new Date(expiryDate);
+
+      if (expirationDate <= new Date() || !token || !userId) {
+        dispatch(setDidTryAL());
+        return;
+      }
+
+      const expirationTime = expirationDate.getTime() - new Date().getTime();
+      dispatch(authenticate(userId, token, expirationTime));
+    };
+
+    tryLogin();
   }, [dispatch]);
 
   return (

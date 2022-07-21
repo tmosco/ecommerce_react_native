@@ -41,6 +41,7 @@ export const createProduct = createAsyncThunk(
 
     return response.data;
   }
+  
 );
 
 export const fetchAllProduct = createAsyncThunk(
@@ -93,7 +94,6 @@ export const updateProduct = createAsyncThunk(
   async ({ id, title, imageUrl, description }, { getState }) => {
     console.log(title);
     const { auth } = getState();
-    const userId = auth.userId;
     const token = auth.token;
     await axios.patch(
       `https://my-food-app-c854d-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
