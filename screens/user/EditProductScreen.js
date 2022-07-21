@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   ScrollView,
@@ -32,16 +32,46 @@ const EditProductScreen = (props) => {
   } = useForm();
 
   const editedProduct = useSelector((state) =>
-    state.products.userProducts.find((product) => productId === product.id));
+    state.products.userProducts.find((product) => productId === product.id)
+  );
   const status = useSelector((state) => state.products.createStatus);
   const error = useSelector((state) => state.products.error);
-
-  console.log(editedProduct)
-
   const dispatch = useDispatch();
 
-  const EMAIL_REGEX =
-    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const submitHandler = (data) => {
+    console.log(data);
+    const { title, imageUrl, price, description } = data;
+
+    try {
+      if (editedProduct) {
+        dispatch(
+          updateProduct({
+            id: productId,
+            title: title,
+            imageUrl: imageUrl,
+            description: description,
+          })
+        );
+      } else {
+        dispatch(
+          createProduct({
+            title: title,
+            imageUrl: imageUrl,
+            description: description,
+            price: parseFloat(price),
+          })
+        );
+      }
+      props.navigation.goBack();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  //   } catch (e) {
+  //     Alert.alert('Oops', e.message);
+  //   }
+  // };
 
   // const success = () => {
   //   if (status === 'success') {
@@ -60,7 +90,7 @@ const EditProductScreen = (props) => {
             iconName={
               Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
             }
-            onPress={handleSubmit}
+            onPress={handleSubmit(submitHandler)}
             // onPress={onSubmit()}
           />
         </HeaderButtons>
@@ -92,7 +122,7 @@ const EditProductScreen = (props) => {
             label="Title"
             name="title"
             control={control}
-            defaultValue={editedProduct? editedProduct.title: ''}
+            defaultValue={editedProduct ? editedProduct.title : ''}
             rules={{
               required: 'Name is required',
               minLength: {
@@ -110,7 +140,7 @@ const EditProductScreen = (props) => {
             label="ImageUrl"
             name="imageUrl"
             control={control}
-            defaultValue={editedProduct? editedProduct.imageUrl: ''}
+            defaultValue={editedProduct ? editedProduct.imageUrl : ''}
             rules={{
               required: 'ImageUrl is required',
               minLength: {
@@ -126,7 +156,7 @@ const EditProductScreen = (props) => {
               label="Price"
               name="price"
               control={control}
-              defaultValue={editedProduct? editedProduct.price: ''}
+              defaultValue={editedProduct ? editedProduct.price : ''}
               rules={{
                 required: 'Price is required',
               }}
@@ -136,7 +166,7 @@ const EditProductScreen = (props) => {
             label="Description"
             name="description"
             control={control}
-            defaultValue={editedProduct? editedProduct.description: ''}
+            defaultValue={editedProduct ? editedProduct.description : ''}
             rules={{
               required: 'Description is required',
             }}
