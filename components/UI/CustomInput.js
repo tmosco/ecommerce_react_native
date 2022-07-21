@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
 
-const CustomInput = ({ control, name, rules = {}, label }) => {
+const CustomInput = ({ control, name, rules = {}, label,defaultValue }) => {
   return (
     <View style={styles.formControl}>
       <View>
@@ -22,6 +22,7 @@ const CustomInput = ({ control, name, rules = {}, label }) => {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
+                defaultValue={defaultValue}
               />
               {error && (
                 <View style={styles.errorContainer}>

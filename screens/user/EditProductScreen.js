@@ -22,7 +22,6 @@ import Colors from '../../constants/Colors';
 import Input from '../../components/UI/Input';
 import { useForm, Controller } from 'react-hook-form';
 
-
 const EditProductScreen = (props) => {
   const productId = props.route.params.productId;
 
@@ -33,24 +32,22 @@ const EditProductScreen = (props) => {
   } = useForm();
 
   const editedProduct = useSelector((state) =>
-    state.products.userProducts.find((product) => productId === product.id)
-  );
+    state.products.userProducts.find((product) => productId === product.id));
   const status = useSelector((state) => state.products.createStatus);
   const error = useSelector((state) => state.products.error);
 
+  console.log(editedProduct)
+
   const dispatch = useDispatch();
 
-
   const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
+    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   // const success = () => {
   //   if (status === 'success') {
   //     props.navigation.goBack();
   //   }
   // };
-
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -79,8 +76,6 @@ const EditProductScreen = (props) => {
     );
   }
 
-
-
   if (error) {
     Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
   }
@@ -93,121 +88,58 @@ const EditProductScreen = (props) => {
     >
       <ScrollView>
         <View style={styles.form}>
-        <CustomInput
-        
-        label='Title'
-          name="name"
-          control={control}
-          placeholder="Name"
-          rules={{
-            required: 'Name is required',
-            minLength: {
-              value: 3,
-              message: 'Name should be at least 3 characters long',
-            },
-            maxLength: {
-              value: 24,
-              message: 'Name should be max 24 characters long',
-            },
-          }}
-        />
+          <CustomInput
+            label="Title"
+            name="title"
+            control={control}
+            defaultValue={editedProduct? editedProduct.title: ''}
+            rules={{
+              required: 'Name is required',
+              minLength: {
+                value: 3,
+                message: 'Name should be at least 3 characters long',
+              },
+              maxLength: {
+                value: 24,
+                message: 'Name should be max 24 characters long',
+              },
+            }}
+          />
 
-        <CustomInput
-        label='ImageUrl'
-          name="username"
-          control={control}
-          placeholder="Username"
-          rules={{
-            required: 'Username is required',
-            minLength: {
-              value: 3,
-              message: 'Username should be at least 3 characters long',
-            },
-            maxLength: {
-              value: 24,
-              message: 'Username should be max 24 characters long',
-            },
-          }}
-        />
-        <CustomInput
-        label='Price'
-          name="email"
-          control={control}
-          placeholder="Email"
-          rules={{
-            required: 'Email is required',
-            pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
-          }}
-        />
-        <CustomInput
-        label="Description"
-          name="password"
-          control={control}
-          placeholder="Password"
-          secureTextEntry
-          rules={{
-            required: 'Password is required',
-            minLength: {
-              value: 8,
-              message: 'Password should be at least 8 characters long',
-            },
-          }}
-        />
-      
-          <Controller
-            control={control}
-            name="title"
-            render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                iconName="title"
-                placeholder="Enter your name here"
-                onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.title : ''}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="title"
-            render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                iconName="title"
-                onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.title : ''}
-              />
-            )}
-          />
-          <Controller
-            control={control}
+          <CustomInput
+            label="ImageUrl"
             name="imageUrl"
-            render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.imageUrl : ''}
-              />
-            )}
-          />
-          {/* {editedProduct ? null : (
-            <Controller
-              control={control}
-              name="price"
-              render={({ field: { onChange, value, onBlur } }) => (
-                <TextInput
-                  onChangeText={(value) => onChange(value)}
-                  value={editedProduct ? editedProduct.price : ''}
-                />
-              )}
-            />
-          )} */}
-          <Controller
             control={control}
+            defaultValue={editedProduct? editedProduct.imageUrl: ''}
+            rules={{
+              required: 'ImageUrl is required',
+              minLength: {
+                value: 3,
+                message: 'ImageUrl should be at least 3 characters long',
+              },
+              // pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
+            }}
+          />
+
+          {editedProduct ? null : (
+            <CustomInput
+              label="Price"
+              name="price"
+              control={control}
+              defaultValue={editedProduct? editedProduct.price: ''}
+              rules={{
+                required: 'Price is required',
+              }}
+            />
+          )}
+          <CustomInput
+            label="Description"
             name="description"
-            render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                onChangeText={(value) => onChange(value)}
-                value={editedProduct ? editedProduct.description : ''}
-              />
-            )}
+            control={control}
+            defaultValue={editedProduct? editedProduct.description: ''}
+            rules={{
+              required: 'Description is required',
+            }}
           />
         </View>
       </ScrollView>
