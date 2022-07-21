@@ -19,6 +19,9 @@ import { HeaderButtons ,Item } from 'react-navigation-header-buttons';
 import CustomButton from '../components/UI/HeaderButton';
 
 const Stack = createStackNavigator();
+
+
+
 export const ProductNavigator = () => {
   return (
     <Stack.Navigator

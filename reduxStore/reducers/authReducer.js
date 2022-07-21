@@ -100,6 +100,9 @@ const authSlice = createSlice({
         initialState,
       };
     },
+    setDidTryAL: (state, action) => {
+      state.authenticated = true;
+    },
   },
 
   extraReducers: {
@@ -135,11 +138,9 @@ const authSlice = createSlice({
       const id = action.payload.localId;
       state.token = token;
       state.userId = id;
-    
       const expirationDate = new Date(
         new Date().getTime() + parseInt(action.payload.expiresIn) * 1000
       );
-
       saveDataToStorage(token, id, expirationDate);
     },
     [loginUser.rejected]: (state, action) => {
@@ -165,6 +166,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setDidTryAL } = authSlice.actions;
 
 export default authSlice.reducer;
